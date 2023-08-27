@@ -2,11 +2,28 @@ module Main where
 
 import GHC.Float (double2Int)
 
+type V3 = (Float, Float, Float)
+
+negateV3 :: V3 -> V3
+addV3 :: V3 -> V3 -> V3
+subV3 :: V3 -> V3 -> V3
+scaleV3 :: V3 -> Float -> V3
+
+negateV3 (x, y, z) = (-x, -y, -z)
+addV3 (x1, y1, z1) (x2, y2, z2) = (x1 + x2, y1 + y2, z1 + z2)
+subV3 v1 v2 = v1 `addV3` negateV3 v2
+scaleV3 (x, y, z) a = (x * a, y * a, z * a)
+
 type RGB = (Double, Double, Double)
 
 data PPM = PPM
   { size :: (Int, Int),
     content :: [RGB]
+  }
+
+data Ray = Ray
+  { dir :: V3,
+    origin :: V3
   }
 
 rgb2String :: RGB -> String
