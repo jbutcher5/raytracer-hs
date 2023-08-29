@@ -1,6 +1,6 @@
 module File where
 
-import Ray
+import Vector3
 
 data PPM = PPM
   { size :: (Int, Int),

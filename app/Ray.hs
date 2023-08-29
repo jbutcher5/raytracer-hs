@@ -3,8 +3,6 @@ module Ray where
 import Vector3
 import GHC.Float (double2Int, int2Double, sqrtDouble)
 
-type RGB = V3
-
 data Ray = Ray
   { dir :: V3,
     origin :: V3
@@ -29,13 +27,15 @@ viewportRay (x, y) (imageWidth, imageHeight) =
     viewportWidth = viewportHeight * aspectRatio :: Double
 
 castRay :: Ray -> RGB
-castRay r = ((1, 1, 1) `scaleV3` c) `addV3` ((0.5, 0.7, 1.0) `scaleV3` b) --  absV3 . unitV3 $ dir r 
+castRay r = if hitSphere (0, 0, 1) 0.5 r then (1, 0, 0) else bg 
   where
-    (_, a, _) = unitV3 $ dir r
-    b = 0.5 * (a + 1) :: Double
-    c = 1 - b :: Double
+    bg = background $ dir r 
 
-rgb2String :: RGB -> String
-rgb2String (r, g, b) = f r ++ " " ++ f g ++ " " ++ f b
+hitSphere :: V3 -> Double -> Ray -> Bool
+hitSphere centre radius Ray { dir = d, origin = o } = discriminant >= 0
   where
-    f = show . double2Int . (255.99 *)
+    oc = o `subV3` centre
+    a = dot d d
+    b = 2 * dot oc d 
+    c = dot oc oc - radius*radius
+    discriminant = b*b - 4*a*c
