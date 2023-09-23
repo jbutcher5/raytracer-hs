@@ -1,8 +1,9 @@
 module Main where
 
-import Vector3
-import Ray
+import Control.Parallel.Strategies (parMap, rpar)
 import File
+import Ray
+import Vector3
 
 main :: IO ()
 main = do
@@ -12,7 +13,10 @@ main = do
       PPM
         { size = imageSize,
           content =
-            [ castRay $ viewportRay (i, j) imageSize | j <- [0 .. imageHeight - 1], i <- [0 .. imageWidth - 1]
-            ]
+            parMap
+              rpar
+              (castRay . viewportRay imageSize)
+              [ (x, y) | y <- [0 .. imageHeight - 1], x <- [0 .. imageWidth - 1]
+              ]
         }
-    imageSize@(imageWidth, imageHeight) = (32, 18):: (Int, Int)
+    imageSize@(imageWidth, imageHeight) = (19200, 10800) :: (Int, Int)

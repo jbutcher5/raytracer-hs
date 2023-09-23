@@ -12,7 +12,7 @@ rayAt :: Ray -> Double -> V3
 rayAt r a = dir r `scaleV3` a `addV3` origin r
 
 viewportRay :: (Int, Int) -> (Int, Int) -> Ray
-viewportRay (x, y) (imageWidth, imageHeight) =
+viewportRay (imageWidth, imageHeight) (x, y) =
   Ray
     { origin = origin,
       dir = (dx * 0.5 + tlx + dx * int2Double x, -dy * 0.5 + tly - dy * int2Double y, oz + focalLength)
